@@ -1,0 +1,16 @@
+﻿# Detection: PowerShell ExecutionPolicy Bypass
+# Data Source: Sysmon Event ID 1 - Process Create
+# Purpose: Identify PowerShell processes launched with ExecutionPolicy Bypass.
+# Note: This behavior can be legitimate and should be investigated in context.
+
+index=main host="DESKTOP-AVJQML1"
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
+"<EventID>1</EventID>"
+"powershell.exe"
+| rex field=_raw "<Data Name='Image'>(?<Image>[^<]+)"
+| rex field=_raw "<Data Name='CommandLine'>(?<CommandLine>[^<]+)"
+| rex field=_raw "<Data Name='ParentImage'>(?<ParentImage>[^<]+)"
+| rex field=_raw "<Data Name='User'>(?<User>[^<]+)"
+| rex field=_raw "<Data Name='IntegrityLevel'>(?<IntegrityLevel>[^<]+)"
+| where like(lower(CommandLine), "%-executionpolicy bypass%")
+| table _time Image CommandLine ParentImage User IntegrityLevel

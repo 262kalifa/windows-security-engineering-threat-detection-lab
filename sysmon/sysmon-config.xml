@@ -1,0 +1,34 @@
+﻿<Sysmon schemaversion="4.91">
+
+  <HashAlgorithms>SHA256</HashAlgorithms>
+  <CheckRevocation>true</CheckRevocation>
+  <DnsLookup>true</DnsLookup>
+
+  <EventFiltering>
+
+    <!-- Event ID 1: Log all process creation -->
+    <ProcessCreate onmatch="exclude" />
+
+    <!-- Event ID 3: Log all network connections -->
+    <NetworkConnect onmatch="exclude" />
+
+    <!-- Event ID 11: Log file creation in common writable locations -->
+    <FileCreate onmatch="include">
+      <TargetFilename condition="begin with">C:\Users\</TargetFilename>
+      <TargetFilename condition="begin with">C:\ProgramData\</TargetFilename>
+      <TargetFilename condition="begin with">C:\Windows\Temp\</TargetFilename>
+    </FileCreate>
+
+    <!-- Event IDs 12-14: Monitor selected persistence/service registry paths -->
+    <RegistryEvent onmatch="include">
+      <TargetObject condition="contains">\Software\Microsoft\Windows\CurrentVersion\Run</TargetObject>
+      <TargetObject condition="contains">\Software\Microsoft\Windows\CurrentVersion\RunOnce</TargetObject>
+      <TargetObject condition="contains">\SYSTEM\CurrentControlSet\Services\</TargetObject>
+    </RegistryEvent>
+
+    <!-- Event ID 22: Log all DNS queries -->
+    <DnsQuery onmatch="exclude" />
+
+  </EventFiltering>
+
+</Sysmon>

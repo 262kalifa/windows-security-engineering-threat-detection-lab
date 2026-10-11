@@ -1,0 +1,12 @@
+﻿# Investigation: Controlled DNS Query
+# Data Source: Sysmon Event ID 22 - DNS Query
+# Purpose: Investigate DNS queries recorded by Sysmon and extract query context.
+# Limitation: Process attribution may be unavailable in some Event ID 22 records.
+
+index=main host="DESKTOP-AVJQML1"
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
+"<EventID>22</EventID>"
+| rex field=_raw "<Data Name='Image'>(?<Image>[^<]+)"
+| rex field=_raw "<Data Name='QueryName'>(?<QueryName>[^<]+)"
+| rex field=_raw "<Data Name='QueryResults'>(?<QueryResults>[^<]+)"
+| table _time Image QueryName QueryResults

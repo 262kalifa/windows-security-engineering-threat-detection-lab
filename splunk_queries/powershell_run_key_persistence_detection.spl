@@ -1,0 +1,15 @@
+﻿# Detection: PowerShell Run-Key Persistence
+# Data Source: Sysmon Event ID 13 - Registry Value Set
+# Purpose: Identify PowerShell modifying Windows Run-key persistence locations.
+# Note: Run-key modification can be legitimate and should be investigated in context.
+
+index=main host="DESKTOP-AVJQML1"
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
+"<EventID>13</EventID>"
+"CurrentVersion\\Run"
+| rex field=_raw "<Data Name='Image'>(?<Image>[^<]+)"
+| rex field=_raw "<Data Name='TargetObject'>(?<TargetObject>[^<]+)"
+| rex field=_raw "<Data Name='Details'>(?<Details>[^<]+)"
+| rex field=_raw "<Data Name='User'>(?<User>[^<]+)"
+| where like(lower(Image), "%powershell.exe")
+| table _time Image TargetObject Details User

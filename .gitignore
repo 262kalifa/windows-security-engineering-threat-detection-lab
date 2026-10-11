@@ -1,0 +1,25 @@
+﻿# Windows and editor files
+Thumbs.db
+.DS_Store
+.vscode/
+
+# Environment files and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+
+# Virtual machine images and exports
+*.vdi
+*.vmdk
+*.vhd
+*.vhdx
+*.ova
+*.iso
+
+# Temporary files
+*.tmp
+*.bak
